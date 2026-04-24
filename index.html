@@ -4,149 +4,200 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ARBR - Amuwo Residents for Better Representation</title>
-  <meta name="description" content="Join thousands of residents building a stronger, more accountable Amuwo-Odofin. Better representation starts with you." />
+  <meta name="description" content="Join residents across Amuwo-Odofin demanding accountable leadership, stronger communities, and real development." />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Open+Sans:wght@400;200;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Barlow+Condensed:wght@500;700;900&display=swap" rel="stylesheet" />
+
+  <!-- GSAP + ScrollTrigger + Lenis -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
   <style>
-    /* ===== RESET & BASE ===== */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ====================================================
+       TOKENS
+    ==================================================== */
     :root {
-      --blue: #1F3A5F;
+      --deep-blue: #1F3A5F;
       --blue-dark: #152a47;
       --blue-mid: #2a4f7c;
-      --blue-light: #e8eef6;
-      --red: #D32F2F;
+      --blue-tint: #466FA5;
+      --bold-red: #D32F2F;
       --red-dark: #b71c1c;
-      --red-light: #ffebee;
-      --bg: #F5F7FA;
+      --red-tint: rgba(211,47,47,0.12);
+      --off-white: #F5F7FA;
       --white: #ffffff;
       --text: #1A1A1A;
-      --text-muted: #5a6a7e;
-      --border: #d8e0ec;
-      --shadow: 0 4px 24px rgba(31,58,95,0.10);
-      --shadow-md: 0 8px 40px rgba(31,58,95,0.14);
-      --radius: 14px;
-      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
-    }
-    html { scroll-behavior: smooth; font-size: 16px; }
-    body {
-      font-family: 'Open Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-    h1,h2,h3,h4,h5 { font-family: 'Poppins', sans-serif; line-height: 1.2; }
-    a { text-decoration: none; color: inherit; }
-    img { max-width: 100%; display: block; }
-    ul { list-style: none; }
-    input, select, textarea { font-family: 'Open Sans', sans-serif; }
+      --muted: #5a6a7e;
+      --border: rgba(31,58,95,0.12);
 
-    /* ===== UTILITIES ===== */
-    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
-    .section { padding: 96px 0; }
-    .section-sm { padding: 64px 0; }
-    .tag {
-      display: inline-block;
-      background: var(--red-light);
-      color: var(--red);
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700;
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 6px 14px;
-      border-radius: 50px;
-      margin-bottom: 18px;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-cond: 'Barlow Condensed', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
     }
-    .section-header { text-align: center; margin-bottom: 60px; }
-    .section-header h2 {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 800;
-      color: var(--blue);
-      margin-bottom: 14px;
+
+    /* ====================================================
+       RESET & BASE
+    ==================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--off-white);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+      cursor: default;
     }
-    .section-header p {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      max-width: 560px;
-      margin: 0 auto;
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    ul { list-style: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* ====================================================
+       CUSTOM CURSOR
+    ==================================================== */
+    .cursor-dot {
+      position: fixed;
+      top: 0; left: 0;
+      width: 8px; height: 8px;
+      background: var(--bold-red);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.2s, height 0.2s;
     }
-    .btn {
+    .cursor-ring {
+      position: fixed;
+      top: 0; left: 0;
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--bold-red);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s var(--ease-out), width 0.3s, height 0.3s, opacity 0.3s;
+      opacity: 0.6;
+    }
+
+    /* ====================================================
+       NOISE OVERLAY
+    ==================================================== */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9990;
+      opacity: 0.4;
+    }
+
+    /* ====================================================
+       UTILITIES
+    ==================================================== */
+    .container { width: 1200px; margin: 0 auto; padding: 0 32px; }
+    .container--wide { max-width: 1440px; margin: 0 auto; padding: 0 48px; }
+    .eyebrow {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      font-family: 'Poppins', sans-serif;
+      gap: 10px;
+      font-family: var(--font-cond);
       font-weight: 700;
-      font-size: 0.95rem;
-      padding: 14px 30px;
-      border-radius: 50px;
-      border: none;
-      cursor: pointer;
-      transition: var(--transition);
-      text-decoration: none;
-      letter-spacing: 0.01em;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--bold-red);
+      margin-bottom: 16px;
     }
-    .btn-primary {
-      background: var(--red);
-      color: #fff;
-      box-shadow: 0 4px 18px rgba(211,47,47,0.35);
-    }
-    .btn-primary:hover {
-      background: var(--red-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(211,47,47,0.45);
-    }
-    .btn-outline {
-      background: transparent;
-      color: #fff;
-      border: 2px solid rgba(255,255,255,0.7);
-    }
-    .btn-outline:hover {
-      background: rgba(255,255,255,0.12);
-      border-color: #fff;
-      transform: translateY(-2px);
-    }
-    .btn-blue {
-      background: var(--blue);
-      color: #fff;
-      box-shadow: 0 4px 18px rgba(31,58,95,0.30);
-    }
-    .btn-blue:hover {
-      background: var(--blue-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(31,58,95,0.40);
+    .eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 24px; height: 2px;
+      background: currentColor;
     }
 
-    /* ===== SCROLL REVEAL ===== */
-    .reveal {
+    /* ====================================================
+       LOADER
+    ==================================================== */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--deep-blue);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .loader-logo {
+      width: 80px;
       opacity: 0;
-      transform: translateY(36px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
+      transform: scale(0.8);
+      animation: loaderIn 0.6s var(--ease-out) 0.2s forwards;
     }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
+    @keyframes loaderIn {
+      to { opacity: 1; transform: scale(1); }
     }
-    .reveal-delay-1 { transition-delay: 0.1s; }
-    .reveal-delay-2 { transition-delay: 0.2s; }
-    .reveal-delay-3 { transition-delay: 0.3s; }
-    .reveal-delay-4 { transition-delay: 0.4s; }
+    .loader-bar-track {
+      width: 160px;
+      height: 2px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .loader-bar-fill {
+      height: 100%;
+      width: 0;
+      background: var(--bold-red);
+      border-radius: 2px;
+      animation: loaderFill 1.2s var(--ease-out) 0.4s forwards;
+    }
+    @keyframes loaderFill {
+      to { width: 100%; }
+    }
 
-    /* ===== NAVBAR ===== */
+    /* ====================================================
+       ANNOUNCEMENT BAR
+    ==================================================== */
+    .announce-bar {
+      background: var(--bold-red);
+      color: #fff;
+      text-align: center;
+      font-family: var(--font-cond);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 9px 24px;
+      position: relative;
+      z-index: 101;
+    }
+    .announce-bar span { opacity: 0.7; margin: 0 8px; }
+
+    /* ====================================================
+       NAVBAR
+    ==================================================== */
     #navbar {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 1000;
-      background: transparent;
-      transition: background 0.35s, box-shadow 0.35s, padding 0.35s;
-      padding: 22px 0;
+      z-index: 100;
+      padding: 24px 0;
+      transition: padding 0.35s var(--ease-out), background 0.35s;
     }
     #navbar.scrolled {
-      background: var(--blue-dark);
-      box-shadow: 0 2px 24px rgba(21,42,71,0.25);
+      background: rgba(21, 42, 71, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       padding: 14px 0;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06);
     }
     .nav-inner {
       display: flex;
@@ -154,337 +205,352 @@
       justify-content: space-between;
     }
     .nav-logo {
-        font-family: 'Poppins', sans-serif;
-        /* font-weight: 900; */
-        font-size: 1rem;
-        color: #fff;
-        letter-spacing: -0.5px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-
-        .logo-text {
-          display: flex;
-          flex-direction: column;
-          line-height: 16px;
-        }
-
-        .top {
-          font-weight: 900;
-        }
-    }
-    .nav-logo .logo-badge {
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      justify-content: center;
-      width: 38px; height: 38px;
-      background: var(--red);
+      gap: 12px;
       color: #fff;
-      border-radius: 10px;
-      font-size: 0.75rem;
-      font-weight: 800;
-      letter-spacing: 0.02em;
+    }
+    .nav-logo img { width: 44px; height: 44px; object-fit: contain; }
+    .nav-logo-text {
+      font-family: var(--font-cond);
+      font-weight: 900;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1.25;
+      color: rgba(255,255,255,0.9);
+    }
+    .nav-logo-text em {
+      font-style: normal;
+      color: var(--bold-red);
     }
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 2px;
     }
     .nav-links a {
-      color: rgba(255,255,255,0.85);
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
-      font-size: 0.88rem;
-      padding: 8px 16px;
-      border-radius: 50px;
-      transition: var(--transition);
-      letter-spacing: 0.01em;
+      font-family: var(--font-cond);
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      padding: 8px 14px;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
     }
-    .nav-links a:hover, .nav-links a.active {
-      color: #fff;
-      background: rgba(255,255,255,0.12);
-    }
-    .nav-cta {
-      background: var(--red) !important;
+    .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .nav-links a.active { color: #fff; }
+    .nav-join {
+      background: var(--bold-red) !important;
       color: #fff !important;
-      padding: 8px 20px !important;
-      box-shadow: 0 2px 12px rgba(211,47,47,0.3);
+      padding: 9px 20px !important;
+      border-radius: 4px !important;
     }
-    .nav-cta:hover {
-      background: var(--red-dark) !important;
-    }
+    .nav-join:hover { background: var(--red-dark) !important; }
+
+    /* Hamburger */
     .hamburger {
       display: none;
       flex-direction: column;
       gap: 5px;
       background: none;
       border: none;
-      cursor: pointer;
       padding: 4px;
     }
     .hamburger span {
       display: block;
-      width: 26px; height: 2.5px;
+      width: 24px; height: 2px;
       background: #fff;
-      border-radius: 4px;
-      transition: var(--transition);
+      border-radius: 2px;
+      transition: transform 0.3s var(--ease-out), opacity 0.2s;
     }
-    .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .hamburger.open span:nth-child(2) { opacity: 0; }
-    .hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
-
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
     .mobile-menu {
       display: none;
       flex-direction: column;
-      gap: 4px;
-      padding: 16px 24px 20px;
       background: var(--blue-dark);
+      padding: 16px 24px 24px;
+      gap: 4px;
     }
     .mobile-menu.open { display: flex; }
     .mobile-menu a {
-      color: rgba(255,255,255,0.88);
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
-      font-size: 1rem;
-      padding: 12px 16px;
-      border-radius: 10px;
-      transition: var(--transition);
+      font-family: var(--font-cond);
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.8);
+      padding: 12px 14px;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
     }
-    .mobile-menu a:hover { background: rgba(255,255,255,0.1); color: #fff; }
-    .mobile-menu .nav-cta { background: var(--red) !important; color: #fff !important; margin-top: 8px; text-align: center; }
+    .mobile-menu a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .mobile-menu .nav-join { background: var(--bold-red) !important; color: #fff !important; margin-top: 8px; text-align: center; }
 
-    /* ===== HERO ===== */
+    /* ====================================================
+       HERO
+    ==================================================== */
     #hero {
         min-height: 100vh;
-        background: linear-gradient(145deg, #1f3a5ff5 0%, #152a47e6 100%), url(hero-bg.png);
-        background-size: cover;
-        background-position: center;
         position: relative;
         display: flex;
-        align-items: center;
+        flex-direction: column;
         overflow: hidden;
+        background-image: linear-gradient(160deg, #152a47fc 0%, #1f3a5ffa 55%, #0d1e33 100%), url(logo.png);
+        background-repeat: no-repeat;
+        background-size: auto, 125%;
+        background-position: center, 0% center;
     }
-    .hero-bg-pattern {
+    .hero-sun-rays {
       position: absolute;
-      inset: 0;
-      opacity: 0.07;
-      background-image:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.5) 1px, transparent 1px),
-        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.5) 1px, transparent 1px);
-      background-size: 48px 48px, 48px 48px;
-    }
-    .hero-accent {
-      position: absolute;
-      width: 600px; height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(211,47,47,0.18) 0%, transparent 70%);
-      top: -100px; right: -100px;
+      top: -20%;
+      right: -5%;
+      width: 70vw;
+      height: 100vh;
       pointer-events: none;
+      opacity: 0.06;
     }
-    .hero-accent-2 {
+    .hero-sun-rays svg { width: 100%; height: 100%; }
+
+    .hero-red-bar {
       position: absolute;
-      width: 400px; height: 400px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
-      bottom: -80px; left: -60px;
-      pointer-events: none;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: var(--bold-red);
     }
-    .hero-stripe {
+    .hero-bottom-stripe {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      height: 5px;
-      background: linear-gradient(90deg, var(--red) 0%, #ff6b6b 50%, var(--red) 100%);
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, var(--bold-red) 30%, var(--bold-red) 70%, transparent 100%);
     }
-    .hero-content {
+
+    /* Candidate flare - right side */
+    .hero-candidate-wrap {
+      position: absolute;
+      right: 0; bottom: 0;
+      height: 95%;
+      width: 42vw;
+      max-width: 600px;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .hero-candidate-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: bottom center;
+      opacity: 0;
+      transform: translateX(40px);
+      filter: drop-shadow(-20px 0px 60px rgba(21,42,71,0.8));
+    }
+    /* gradient fade on left edge of candidate */
+    .hero-candidate-wrap::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 40%;
+      background: linear-gradient(to right, var(--deep-blue) 0%, transparent 100%);
+      z-index: 1;
+    }
+    /* gradient fade at bottom */
+    .hero-candidate-wrap::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 20%;
+      background: linear-gradient(to top, var(--blue-dark) 0%, transparent 100%);
+      z-index: 1;
+    }
+
+    .hero-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
       position: relative;
       z-index: 2;
-      width: 100%;
-      padding-top: 100px;
+      padding-top: 160px;
+      padding-bottom: 100px;
     }
-    .hero-inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-    }
-    .hero-text .pill {
+    .hero-text-wrap { max-width: 1200px; }
+
+    .hero-location-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: rgba(255,255,255,0.9);
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
-      font-size: 0.78rem;
-      letter-spacing: 0.1em;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.75);
+      font-family: var(--font-cond);
+      font-weight: 700;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      padding: 7px 16px;
-      border-radius: 50px;
-      margin-bottom: 28px;
+      padding: 7px 14px;
+      border-radius: 2px;
+      margin-bottom: 32px;
     }
-    .hero-text .pill span.dot {
-      width: 7px; height: 7px;
+    .hero-location-badge .pulse {
+      width: 6px; height: 6px;
       background: #4ade80;
       border-radius: 50%;
-      display: inline-block;
-      animation: pulse-dot 1.8s infinite;
+      animation: pulse 2s infinite;
     }
-    @keyframes pulse-dot {
-      0%,100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-    .hero-text h1 {
-      font-size: clamp(2.4rem, 5.5vw, 4rem);
-      font-weight: 900;
-      color: #fff;
-      margin-bottom: 22px;
-      line-height: 1.08;
-    }
-    .hero-text h1 em {
-      font-style: normal;
-      color: #ff8a80;
-      position: relative;
-      display: inline-block;
-    }
-    .hero-text p {
-      font-size: 1.12rem;
-      color: rgba(255,255,255,0.78);
-      max-width: 480px;
-      margin-bottom: 38px;
-      line-height: 1.7;
-    }
-    .hero-buttons {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-    .hero-visual {
-      display: flex;
-      justify-content: center;
-    }
-    .hero-card {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.14);
-      backdrop-filter: blur(12px);
-      border-radius: 24px;
-      padding: 36px;
-      width: 100%;
-      max-width: 380px;
-    }
-    .hero-card-title {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700;
-      font-size: 1rem;
-      color: rgba(255,255,255,0.7);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 28px;
-    }
-    .hero-stat-list { display: flex; flex-direction: column; gap: 20px; }
-    .hero-stat-item {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .hero-stat-icon {
-      width: 46px; height: 46px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      flex-shrink: 0;
-    }
-    .hero-stat-icon.red { background: rgba(211,47,47,0.25); }
-    .hero-stat-icon.green { background: rgba(74,222,128,0.18); }
-    .hero-stat-icon.yellow { background: rgba(251,191,36,0.18); }
-    .hero-stat-text strong {
-      display: block;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 800;
-      font-size: 1.5rem;
-      color: #fff;
-      line-height: 1;
-      margin-bottom: 3px;
-    }
-    .hero-stat-text span {
-      font-size: 0.83rem;
-      color: rgba(255,255,255,0.6);
-    }
-    .hero-join-quick {
-      margin-top: 28px;
-      padding-top: 24px;
-      border-top: 1px solid rgba(255,255,255,0.12);
-    }
-    .hero-join-quick p {
-      color: rgba(255,255,255,0.6);
-      font-size: 0.82rem;
-      margin-bottom: 12px;
-    }
-    .hero-join-quick .mini-avatars {
-      display: flex;
-      align-items: center;
-      gap: 0;
-    }
-    .avatar {
-      width: 34px; height: 34px;
-      border-radius: 50%;
-      border: 2.5px solid var(--blue);
-      margin-right: -10px;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700;
-      font-size: 0.72rem;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .avatar:nth-child(1) { background: #e74c3c; }
-    .avatar:nth-child(2) { background: #2ecc71; }
-    .avatar:nth-child(3) { background: #f39c12; }
-    .avatar:nth-child(4) { background: #9b59b6; }
-    .avatar:nth-child(5) { background: #1abc9c; }
-    .avatar-more {
-      background: rgba(255,255,255,0.15);
-      width: 34px; height: 34px;
-      border-radius: 50%;
-      border: 2.5px solid var(--blue);
-      margin-left: 4px;
-      font-size: 0.72rem;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
     }
 
-    /* ===== TRUST STRIP ===== */
+.hero-h1 {
+    font-family: var(--font-display);
+    font-size: clamp(4.8rem, 10vw, 10.5rem);
+    color: #fff;
+    line-height: 0.92;
+    letter-spacing: 0.01em;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+    .hero-h1 .line { display: block; overflow: hidden; }
+    .hero-h1 .line span {
+      display: block;
+      transform: translateY(100%);
+    }
+    .hero-h1 .accent { color: var(--bold-red); }
+
+    .hero-rule {
+      width: 80px;
+      height: 3px;
+      background: var(--bold-red);
+      margin: 28px 0;
+      transform-origin: left;
+      transform: scaleX(0);
+    }
+
+    .hero-sub {
+      font-size: 1.12rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.65);
+      max-width: 620px;
+      line-height: 1.7;
+      margin-bottom: 44px;
+      opacity: 0;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      opacity: 0;
+    }
+    .btn-hero-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bold-red);
+      color: #fff;
+      font-family: var(--font-cond);
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 16px 32px;
+      border-radius: 2px;
+      border: none;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(211,47,47,0.4);
+    }
+    .btn-hero-primary:hover {
+      background: var(--red-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(211,47,47,0.5);
+    }
+    .btn-hero-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      color: rgba(255,255,255,0.8);
+      font-family: var(--font-cond);
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 15px 32px;
+      border-radius: 2px;
+      border: 1px solid rgba(255,255,255,0.22);
+      transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .btn-hero-ghost:hover {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border-color: rgba(255,255,255,0.45);
+      transform: translateY(-2px);
+    }
+
+    /* Stats row */
+    .hero-stats {
+      display: flex;
+      gap: 0;
+      margin-top: 64px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 32px;
+      opacity: 0;
+    }
+    .hero-stat {
+      flex: 1;
+      padding-right: 32px;
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .hero-stat:last-child { border-right: none; padding-right: 0; padding-left: 32px; }
+    .hero-stat:not(:first-child):not(:last-child) { padding-left: 32px; }
+    .hero-stat strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 2.6rem;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .hero-stat span {
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .hero-stat .num-accent { color: var(--bold-red); }
+
+    /* ====================================================
+       TRUST BAR
+    ==================================================== */
     #trust {
-      background: var(--white);
-      padding: 0;
+      background: #fff;
       border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 2;
     }
     .trust-inner {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      border-top: 4px solid var(--red);
     }
     .trust-item {
-      padding: 40px 36px;
+      padding: 36px 40px;
       display: flex;
       align-items: center;
       gap: 20px;
       border-right: 1px solid var(--border);
-      transition: var(--transition);
+      transition: background 0.2s;
     }
     .trust-item:last-child { border-right: none; }
-    .trust-item:hover { background: var(--bg); }
-    .trust-icon {
+    .trust-item:hover { background: var(--off-white); }
+    .trust-icon-wrap {
       width: 52px; height: 52px;
-      border-radius: 14px;
-      background: var(--blue-light);
+      background: var(--deep-blue);
+      border-radius: 2px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -492,643 +558,884 @@
       flex-shrink: 0;
     }
     .trust-num {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 900;
-      font-size: 2rem;
-      color: var(--blue);
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      color: var(--deep-blue);
       line-height: 1;
-      margin-bottom: 3px;
     }
     .trust-label {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      font-weight: 200;
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: var(--muted);
+      margin-top: 2px;
     }
 
-    /* ===== ABOUT ===== */
-    #about { background: var(--bg); }
-    .about-inner {
+    /* ====================================================
+       SECTION DEFAULTS
+    ==================================================== */
+    .section { padding: 120px 0; }
+    .section-sm { padding: 80px 0; }
+    .section-dark {
+      background: var(--deep-blue);
+      color: #fff;
+    }
+    .section-white { background: #fff; }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+    }
+    .section-title--light { color: #fff; }
+    .section-title--dark { color: var(--deep-blue); }
+    .section-title--split {
+      display: flex;
+      flex-direction: column;
+    }
+    .section-title em {
+      font-style: normal;
+      color: var(--bold-red);
+    }
+    .section-body {
+      font-size: 1rem;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--muted);
+      max-width: 520px;
+    }
+    .section-body--light { color: rgba(255,255,255,0.6); }
+
+    /* ====================================================
+       ABOUT
+    ==================================================== */
+    #about { background: var(--off-white); overflow: hidden; }
+    .about-grid {
       display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 72px;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 80px;
       align-items: center;
     }
-    .about-visual {
+    .about-left { position: relative; }
+    .about-img-frame {
       position: relative;
-    }
-    .about-card-main {
-      background: var(--blue);
-      border-radius: 22px;
-      padding: 48px 40px;
-      color: #fff;
-      position: relative;
+      border-radius: 2px;
       overflow: hidden;
     }
-    .about-card-main::before {
+    .about-img-frame img {
+      width: 100%;
+      height: 480px;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.9);
+    }
+    /* Red corner accent */
+    .about-img-frame::before {
       content: '';
       position: absolute;
-      top: -40px; right: -40px;
-      width: 180px; height: 180px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.05);
+      top: -2px; left: -2px;
+      right: 40%; bottom: 60%;
+      border-top: 4px solid var(--bold-red);
+      border-left: 4px solid var(--bold-red);
+      z-index: 2;
+      pointer-events: none;
     }
-    .about-card-main::after {
+    /* Overlay gradient */
+    .about-img-frame::after {
       content: '';
       position: absolute;
-      bottom: -30px; left: -30px;
-      width: 120px; height: 120px;
-      border-radius: 50%;
-      background: rgba(211,47,47,0.15);
-    }
-    .about-quote {
-      font-family: 'Poppins', sans-serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-      line-height: 1.5;
-      margin-bottom: 28px;
-      position: relative;
+      inset: 0;
+      background: linear-gradient(to top, rgba(21,42,71,0.6) 0%, transparent 50%);
       z-index: 1;
     }
-    .about-quote::before {
-      content: '\201C';
-      font-size: 4rem;
-      color: var(--red);
-      display: block;
-      line-height: 0.6;
-      margin-bottom: 16px;
-    }
-    .about-signature {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255,255,255,0.15);
-    }
-    .about-sig-badge {
-      width: 44px; height: 44px;
-      background: var(--red);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 800;
-      color: #fff;
-      font-size: 1rem;
-    }
-    .about-sig-text strong {
-      display: block;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-    .about-sig-text span {
-      font-size: 0.78rem;
-      color: rgba(255,255,255,0.65);
-    }
-    .about-badge-float {
+    .about-float-badge {
       position: absolute;
-      bottom: -18px; right: 32px;
-      background: var(--white);
-      border-radius: 14px;
-      padding: 14px 20px;
-      box-shadow: var(--shadow-md);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .about-badge-float .emoji { font-size: 1.5rem; }
-    .about-badge-float strong {
-      display: block;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 800;
-      font-size: 0.95rem;
-      color: var(--blue);
-    }
-    .about-badge-float span { font-size: 0.75rem; color: var(--text-muted); }
-    .about-text { padding-bottom: 30px; }
-    .about-text h2 {
-      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-      font-weight: 800;
-      color: var(--blue);
-      margin-bottom: 20px;
-    }
-    .about-text p {
-      color: var(--text-muted);
-      font-size: 1.02rem;
-      line-height: 1.75;
-      margin-bottom: 16px;
-    }
-    .about-points { margin: 28px 0; display: flex; flex-direction: column; gap: 14px; }
-    .about-point {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-    }
-    .about-point .check {
-      width: 26px; height: 26px;
-      background: var(--blue);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      bottom: -20px; right: -24px;
+      background: var(--bold-red);
       color: #fff;
-      font-size: 0.78rem;
-      flex-shrink: 0;
-      margin-top: 1px;
+      padding: 20px 24px;
+      border-radius: 2px;
+      z-index: 3;
+      text-align: center;
     }
-    .about-point p {
-      margin: 0;
-      font-size: 0.96rem;
-      color: var(--text);
-      font-weight: 200;
+    .about-float-badge strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      line-height: 1;
+    }
+    .about-float-badge span {
+      font-family: var(--font-cond);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.85;
     }
 
-    /* ===== PILLARS ===== */
-    #pillars { background: var(--white); }
+    .about-right {}
+    .about-body {
+      margin: 28px 0;
+    }
+    .about-body p {
+      font-size: 1.02rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+    .about-checks {
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .about-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .about-check-mark {
+      width: 22px; height: 22px;
+      background: var(--deep-blue);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .about-check-mark svg { width: 12px; height: 12px; stroke: #fff; stroke-width: 3; fill: none; }
+    .about-check-text {
+      font-size: 0.96rem;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ====================================================
+       PILLARS / AGENDA
+    ==================================================== */
+    #pillars { background: var(--deep-blue); overflow: hidden; position: relative; }
+    .pillars-sun {
+      position: absolute;
+      top: -10%;
+      right: -5%;
+      width: 50vw;
+      height: 80vh;
+      opacity: 0.03;
+      pointer-events: none;
+    }
+    .pillars-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 72px;
+    }
+    .pillars-header .section-body--light { max-width: 360px; }
     .pillars-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
+      gap: 1px;
+      background: rgba(255,255,255,0.06);
     }
     .pillar-card {
-      background: var(--bg);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 36px 28px;
-      transition: var(--transition);
+      background: var(--deep-blue);
+      padding: 40px 32px;
       position: relative;
       overflow: hidden;
+      transition: background 0.3s;
     }
+    .pillar-card:hover { background: rgba(255,255,255,0.04); }
     .pillar-card::after {
       content: '';
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      height: 4px;
-      background: var(--red);
+      height: 3px;
+      background: var(--bold-red);
       transform: scaleX(0);
       transform-origin: left;
-      transition: transform 0.35s ease;
-    }
-    .pillar-card:hover {
-      border-color: var(--blue);
-      background: #fff;
-      box-shadow: var(--shadow);
-      transform: translateY(-4px);
+      transition: transform 0.4s var(--ease-out);
     }
     .pillar-card:hover::after { transform: scaleX(1); }
-    .pillar-icon {
-      font-size: 2.4rem;
+    .pillar-num {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      color: rgba(255,255,255,0.06);
+      line-height: 1;
+      margin-bottom: 28px;
+      transition: color 0.3s;
+    }
+    .pillar-card:hover .pillar-num { color: rgba(211,47,47,0.15); }
+    .pillar-icon-wrap {
+      width: 48px; height: 48px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
       margin-bottom: 20px;
-      display: block;
     }
     .pillar-card h3 {
-      font-size: 1.1rem;
+      font-family: var(--font-cond);
       font-weight: 700;
-      color: var(--blue);
+      font-size: 1.1rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #fff;
       margin-bottom: 12px;
     }
     .pillar-card p {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      line-height: 1.65;
+      font-size: 0.87rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.7;
     }
 
-    /* ===== WHY IT MATTERS ===== */
-    #why {
-      background: var(--blue);
+    /* ====================================================
+       WHY IT MATTERS (Marquee strip)
+    ==================================================== */
+    #why { background: #fff; overflow: hidden; }
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .why-left {}
+    .why-issues {
+      margin-top: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .why-issue {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      transition: padding-left 0.3s var(--ease-out);
+      cursor: default;
+    }
+    .why-issue:first-child { border-top: 1px solid var(--border); }
+    .why-issue:hover { padding-left: 8px; }
+    .why-issue-num {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: var(--bold-red);
+      flex-shrink: 0;
+      width: 32px;
+    }
+    .why-issue-body strong {
+      display: block;
+      font-family: var(--font-cond);
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--deep-blue);
+      margin-bottom: 4px;
+    }
+    .why-issue-body span {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--muted);
+    }
+    .why-arrow {
+      margin-left: auto;
+      color: var(--border);
+      transition: color 0.2s, transform 0.2s;
+      font-size: 1.1rem;
+    }
+    .why-issue:hover .why-arrow { color: var(--bold-red); transform: translateX(4px); }
+
+    .why-right { padding-top: 16px; position: relative; }
+    .why-quote-card {
+      background: var(--deep-blue);
+      color: #fff;
+      padding: 52px 48px;
+      border-radius: 2px;
       position: relative;
       overflow: hidden;
     }
-    #why::before {
-      content: '';
+    .why-quote-card::before {
+      content: '\201C';
       position: absolute;
-      inset: 0;
-      background-image: radial-gradient(circle at 10% 50%, rgba(255,255,255,0.04) 1px, transparent 1px);
-      background-size: 32px 32px;
+      top: -10px; left: 32px;
+      font-family: var(--font-display);
+      font-size: 9rem;
+      color: var(--bold-red);
+      opacity: 0.2;
+      line-height: 1;
+      pointer-events: none;
     }
-    .why-inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 72px;
-      align-items: center;
-      position: relative;
-      z-index: 1;
-    }
-    .why-text { color: #fff; }
-    .why-text .tag { background: rgba(211,47,47,0.25); color: #ff8a80; }
-    .why-text h2 {
-      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 20px;
-    }
-    .why-text p {
-      color: rgba(255,255,255,0.72);
-      font-size: 1rem;
-      line-height: 1.75;
+    .why-quote-text {
+      font-family: var(--font-cond);
+      font-weight: 500;
+      font-size: 1.4rem;
+      line-height: 1.5;
       margin-bottom: 32px;
+      position: relative;
     }
-    .why-issues { display: flex; flex-direction: column; gap: 16px; }
-    .why-issue {
+    .why-quote-author {
       display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 14px;
-      padding: 20px 22px;
-      transition: var(--transition);
+      align-items: center;
+      gap: 14px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
     }
-    .why-issue:hover {
-      background: rgba(255,255,255,0.10);
-    }
-    .why-issue-icon {
-      font-size: 1.6rem;
+    .why-quote-avatar {
+      width: 44px; height: 44px;
+      background: var(--bold-red);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-cond);
+      font-weight: 900;
+      font-size: 1rem;
+      color: #fff;
       flex-shrink: 0;
     }
-    .why-issue h4 {
-      font-family: 'Poppins', sans-serif;
+    .why-quote-meta strong {
+      display: block;
+      font-family: var(--font-cond);
       font-weight: 700;
-      font-size: 0.95rem;
-      color: #fff;
-      margin-bottom: 4px;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
     }
-    .why-issue p {
-      font-size: 0.86rem;
-      color: rgba(255,255,255,0.62);
-      margin: 0;
-      line-height: 1.6;
+    .why-quote-meta span {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.5);
     }
 
-    /* ===== JOIN SECTION ===== */
-    #join { background: var(--bg); }
-    .join-inner {
+    .why-pillars-mini {
+      margin-top: 32px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: start;
+      gap: 16px;
     }
-    .join-info h2 {
-      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-      font-weight: 800;
-      color: var(--blue);
-      margin-bottom: 16px;
+    .why-pillar-mini {
+      background: var(--off-white);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 20px;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .join-info p {
-      color: var(--text-muted);
-      font-size: 1rem;
-      line-height: 1.7;
-      margin-bottom: 32px;
+    .why-pillar-mini:hover { border-color: var(--bold-red); background: #fff; }
+    .why-pillar-mini .icon { font-size: 1.5rem; margin-bottom: 10px; }
+    .why-pillar-mini strong {
+      display: block;
+      font-family: var(--font-cond);
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--deep-blue);
+      margin-bottom: 4px;
     }
-    .join-benefits { display: flex; flex-direction: column; gap: 20px; }
-    .join-benefit {
+    .why-pillar-mini span {
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: var(--muted);
+    }
+
+    /* ====================================================
+       MARQUEE
+    ==================================================== */
+    .marquee-section {
+      background: var(--bold-red);
+      padding: 18px 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .marquee-track {
+      display: flex;
+      gap: 0;
+      width: max-content;
+      animation: marqueeScroll 30s linear infinite;
+    }
+    .marquee-section:hover .marquee-track { animation-play-state: paused; }
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 32px;
+      white-space: nowrap;
+      font-family: var(--font-cond);
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.9);
+    }
+    .marquee-sep {
+      width: 6px; height: 6px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 50%;
+    }
+
+    /* ====================================================
+       JOIN FORM
+    ==================================================== */
+    #join {
+      background: var(--off-white);
+      position: relative;
+      overflow: hidden;
+    }
+    #join::before {
+      content: '';
+      position: absolute;
+      right: -10%;
+      top: -20%;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(31,58,95,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .join-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .join-left {}
+    .join-sub {
+      margin: 28px 0 40px;
+    }
+    .join-features {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .join-feature {
       display: flex;
       align-items: flex-start;
       gap: 14px;
     }
-    .join-benefit-icon {
-      width: 44px; height: 44px;
-      background: var(--blue-light);
-      border-radius: 12px;
+    .join-feature-icon {
+      width: 32px; height: 32px;
+      background: var(--bold-red);
+      border-radius: 2px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 0.9rem;
       flex-shrink: 0;
     }
-    .join-benefit h4 {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--blue);
-      margin-bottom: 3px;
-    }
-    .join-benefit p { font-size: 0.86rem; color: var(--text-muted); margin: 0; }
-    .join-form-wrap {
-      background: var(--white);
-      border-radius: 24px;
-      padding: 44px 40px;
-      box-shadow: var(--shadow-md);
-      border: 1.5px solid var(--border);
-    }
-    .join-form-wrap h3 {
-      font-size: 1.35rem;
-      font-weight: 800;
-      color: var(--blue);
-      margin-bottom: 6px;
-    }
-    .join-form-wrap > p {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-bottom: 30px;
-    }
-    .form-group { margin-bottom: 20px; }
-    .form-group label {
+    .join-feature strong {
       display: block;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
+      font-family: var(--font-cond);
+      font-weight: 700;
+      font-size: 0.92rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--deep-blue);
+      margin-bottom: 2px;
+    }
+    .join-feature span {
       font-size: 0.83rem;
-      color: var(--text);
-      margin-bottom: 7px;
-      letter-spacing: 0.01em;
+      font-weight: 300;
+      color: var(--muted);
     }
-    .form-group label .opt {
-      font-weight: 400;
-      color: var(--text-muted);
-      font-family: 'Open Sans', sans-serif;
-      font-size: 0.78rem;
+
+    .join-form-wrap {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 48px 40px;
+      position: relative;
     }
-    .form-control {
+    .join-form-wrap::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--bold-red);
+    }
+    .form-title {
+      font-family: var(--font-cond);
+      font-weight: 900;
+      font-size: 1.4rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--deep-blue);
+      margin-bottom: 8px;
+    }
+    .form-sub { font-size: 0.85rem; font-weight: 300; color: var(--muted); margin-bottom: 28px; }
+    .form-group { margin-bottom: 20px; }
+    .form-label {
+      display: block;
+      font-family: var(--font-cond);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--deep-blue);
+      margin-bottom: 8px;
+    }
+    .form-input, .form-select {
       width: 100%;
-      padding: 13px 18px;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      font-size: 0.95rem;
+      padding: 13px 16px;
+      background: var(--off-white);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-family: var(--font-body);
+      font-size: 0.92rem;
       color: var(--text);
-      background: var(--bg);
       outline: none;
-      transition: border-color 0.25s, box-shadow 0.25s;
+      transition: border-color 0.2s, box-shadow 0.2s;
       appearance: none;
     }
-    .form-control:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(31,58,95,0.1);
-      background: #fff;
+    .form-input:focus, .form-select:focus {
+      border-color: var(--deep-blue);
+      box-shadow: 0 0 0 3px rgba(31,58,95,0.08);
     }
-    select.form-control {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235a6a7e' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a6a7e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 16px center;
       padding-right: 40px;
     }
-    .form-submit { width: 100%; justify-content: center; font-size: 1rem; padding: 16px; border-radius: 12px; margin-top: 8px; }
-    .form-note {
-      text-align: center;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-top: 14px;
+    .form-privacy {
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: var(--muted);
+      margin-bottom: 20px;
     }
-    .form-note span { margin: 0 4px; }
-    /* Success */
+    .btn-form-submit {
+      width: 100%;
+      padding: 16px;
+      background: var(--deep-blue);
+      color: #fff;
+      font-family: var(--font-cond);
+      font-weight: 900;
+      font-size: 0.88rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(31,58,95,0.2);
+    }
+    .btn-form-submit:hover {
+      background: var(--bold-red);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(211,47,47,0.35);
+    }
     .form-success {
       display: none;
       text-align: center;
-      padding: 20px 0;
+      padding: 32px 0;
     }
     .form-success.show { display: block; }
-    .success-icon {
-      font-size: 3.5rem;
-      margin-bottom: 16px;
-      display: block;
-    }
+    .success-icon { font-size: 3rem; display: block; margin-bottom: 16px; }
     .form-success h3 {
-      font-size: 1.4rem;
-      color: var(--blue);
-      margin-bottom: 8px;
+      font-family: var(--font-cond);
+      font-weight: 900;
+      font-size: 1.5rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--deep-blue);
+      margin-bottom: 12px;
     }
-    .form-success p {
-      color: var(--text-muted);
-      margin-bottom: 24px;
-      font-size: 0.95rem;
-    }
+    .form-success p { font-size: 0.9rem; font-weight: 300; color: var(--muted); margin-bottom: 24px; }
     .wa-btn {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       background: #25D366;
       color: #fff;
-      font-family: 'Poppins', sans-serif;
+      font-family: var(--font-cond);
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       padding: 14px 28px;
-      border-radius: 50px;
-      transition: var(--transition);
-      box-shadow: 0 4px 16px rgba(37,211,102,0.35);
-      text-decoration: none;
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.2s;
     }
-    .wa-btn:hover {
-      background: #1ebe5c;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(37,211,102,0.45);
-    }
+    .wa-btn:hover { background: #1ebe5c; transform: translateY(-2px); }
 
-    /* ===== CTA SECTION ===== */
+    /* ====================================================
+       CTA SECTION
+    ==================================================== */
     #cta {
-        background: linear-gradient(135deg, #b71c1cb8 0%, var(--red) 100%), url(cta-bg.png);
-        text-align: center;
-        padding: 100px 0;
-        position: relative;
-        overflow: hidden;
+      background: var(--deep-blue);
+      position: relative;
+      overflow: hidden;
+      padding: 120px 0;
+      text-align: center;
     }
-    #cta::before {
-      content: '';
+    #cta .sun-bg {
       position: absolute;
       inset: 0;
-      background-image: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 1px, transparent 1px);
-      background-size: 36px 36px;
+      opacity: 0.05;
+      background-image: repeating-conic-gradient(var(--bold-red) 0deg, transparent 1deg, transparent 18deg);
+      background-size: 120px 120px;
     }
-    .cta-inner { position: relative; z-index: 1; }
-    #cta .tag { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); }
+    #cta .container { position: relative; z-index: 1; }
     #cta h2 {
-      font-size: clamp(2rem, 4.5vw, 3.2rem);
-      font-weight: 900;
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 7vw, 6rem);
       color: #fff;
-      margin-bottom: 18px;
+      line-height: 0.95;
+      margin: 16px 0 24px;
     }
+    #cta h2 em { font-style: normal; color: var(--bold-red); }
     #cta p {
-      font-size: 1.1rem;
-      color: rgba(255,255,255,0.82);
-      max-width: 520px;
-      margin: 0 auto 40px;
-      line-height: 1.7;
+      font-size: 1rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.6);
+      max-width: 460px;
+      margin: 0 auto 44px;
+      line-height: 1.75;
     }
     .cta-buttons {
       display: flex;
-      justify-content: center;
       gap: 16px;
+      justify-content: center;
       flex-wrap: wrap;
     }
-    .btn-white {
-      background: #fff;
-      color: var(--red);
-      font-weight: 800;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.18);
-    }
-    .btn-white:hover {
-      background: #f8f8f8;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(0,0,0,0.22);
-    }
-    .btn-outline-white {
-      background: transparent;
-      color: #fff;
-      border: 2px solid rgba(255,255,255,0.6);
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700;
-      font-size: 0.95rem;
-      padding: 14px 30px;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: var(--transition);
+    .btn-cta-white {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      background: #fff;
+      color: var(--bold-red);
+      font-family: var(--font-cond);
+      font-weight: 900;
+      font-size: 0.88rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 16px 36px;
+      border-radius: 2px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.2);
     }
-    .btn-outline-white:hover {
-      background: rgba(255,255,255,0.12);
-      border-color: #fff;
-      transform: translateY(-2px);
+    .btn-cta-white:hover { background: #f0f0f0; transform: translateY(-2px); }
+    .btn-cta-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      color: rgba(255,255,255,0.8);
+      font-family: var(--font-cond);
+      font-weight: 700;
+      font-size: 0.88rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 15px 36px;
+      border-radius: 2px;
+      border: 1px solid rgba(255,255,255,0.25);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
     }
+    .btn-cta-ghost:hover { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.5); transform: translateY(-2px); }
 
-    /* ===== FOOTER ===== */
+    /* ====================================================
+       FOOTER
+    ==================================================== */
     footer {
       background: var(--blue-dark);
-      color: rgba(255,255,255,0.8);
-      padding: 64px 0 0;
+      color: rgba(255,255,255,0.7);
     }
+.footer-top-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--bold-red) 0%, #a9181833 100%);
+    margin-bottom: 72px;
+}
     .footer-inner {
       display: grid;
       grid-template-columns: 2fr 1fr 1fr 1fr;
       gap: 48px;
       padding-bottom: 48px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
-    .footer-brand .nav-logo { margin-bottom: 16px; }
+    .footer-brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .footer-brand-logo img { width: 40px; }
+    .footer-brand-name {
+      font-family: var(--font-cond);
+      font-weight: 900;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.3;
+    }
     .footer-brand p {
-      font-size: 0.88rem;
-      line-height: 1.7;
-      color: rgba(255,255,255,0.6);
-      max-width: 270px;
+      font-size: 0.85rem;
+      font-weight: 300;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.45);
+      max-width: 260px;
       margin-bottom: 24px;
     }
-    .social-links { display: flex; gap: 10px; }
+    .social-links { display: flex; gap: 8px; }
     .social-link {
-      width: 38px; height: 38px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.15);
+      width: 36px; height: 36px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 2px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
-      color: rgba(255,255,255,0.7);
-      transition: var(--transition);
-      text-decoration: none;
-    }
-    .social-link:hover {
-      background: rgba(255,255,255,0.12);
-      color: #fff;
-      border-color: rgba(255,255,255,0.3);
-    }
-    .footer-col h4 {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700;
+      color: rgba(255,255,255,0.5);
       font-size: 0.9rem;
-      color: #fff;
-      margin-bottom: 20px;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .social-link:hover { color: #fff; border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.07); }
+    .footer-col h4 {
+      font-family: var(--font-cond);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 20px;
     }
     .footer-col ul { display: flex; flex-direction: column; gap: 10px; }
     .footer-col ul li a {
-      font-size: 0.88rem;
-      color: rgba(255,255,255,0.6);
-      transition: color 0.25s;
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.45);
+      transition: color 0.2s;
     }
-    .footer-col ul li a:hover { color: #fff; }
+    .footer-col ul li a:hover { color: rgba(255,255,255,0.9); }
     .footer-bottom {
-      padding: 22px 0;
+      padding: 20px 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 10px;
     }
-    .footer-bottom p { font-size: 0.82rem; color: rgba(255,255,255,0.45); }
-    .footer-bottom .built { color: rgba(255,255,255,0.35); font-size: 0.78rem; }
+    .footer-bottom p { font-size: 0.78rem; color: rgba(255,255,255,0.3); }
+    .footer-tagline {
+      font-family: var(--font-cond);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--bold-red);
+      opacity: 0.7;
+    }
 
-    /* ===== SCROLL TO TOP ===== */
+    /* ====================================================
+       SCROLL TOP
+    ==================================================== */
     #scrollTop {
       position: fixed;
       bottom: 28px; right: 28px;
       width: 44px; height: 44px;
-      background: var(--blue);
+      background: var(--bold-red);
       color: #fff;
-      border-radius: 12px;
       border: none;
+      border-radius: 2px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1rem;
-      box-shadow: var(--shadow);
+      box-shadow: 0 4px 20px rgba(211,47,47,0.4);
       opacity: 0;
       pointer-events: none;
-      transition: var(--transition);
+      transition: opacity 0.3s, transform 0.2s;
       z-index: 999;
     }
     #scrollTop.show { opacity: 1; pointer-events: all; }
-    #scrollTop:hover { background: var(--blue-dark); transform: translateY(-2px); }
+    #scrollTop:hover { transform: translateY(-3px); }
 
-    /* ===== RESPONSIVE ===== */
+    /* ====================================================
+       SCROLL REVEAL
+    ==================================================== */
+    .r { opacity: 0; transform: translateY(32px); transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out); }
+    .r.in { opacity: 1; transform: translateY(0); }
+    .r-d1 { transition-delay: 0.1s; }
+    .r-d2 { transition-delay: 0.2s; }
+    .r-d3 { transition-delay: 0.3s; }
+    .r-d4 { transition-delay: 0.4s; }
+
+    /* ====================================================
+       RESPONSIVE
+    ==================================================== */
     @media (max-width: 1024px) {
       .pillars-grid { grid-template-columns: repeat(2, 1fr); }
       .footer-inner { grid-template-columns: 1fr 1fr; }
+      .hero-candidate-wrap { width: 38vw; opacity: 0.5; }
     }
     @media (max-width: 900px) {
-      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
-      .hero-visual { order: -1; }
-      .hero-card { max-width: 100%; }
-      .about-inner, .why-inner, .join-inner { grid-template-columns: 1fr; gap: 48px; }
+      .about-grid, .join-grid { grid-template-columns: 1fr; gap: 48px; }
+      .why-grid { grid-template-columns: 1fr; gap: 48px; }
       .trust-inner { grid-template-columns: 1fr; }
       .trust-item { border-right: none; border-bottom: 1px solid var(--border); }
       .trust-item:last-child { border-bottom: none; }
+      .pillars-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+      .hero-stats { flex-direction: column; gap: 24px; }
+      .hero-stat { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 0 0 24px 0 !important; }
+      .hero-stat:last-child { border-bottom: none; }
+      .hero-candidate-wrap { display: none; }
     }
     @media (max-width: 768px) {
-      .section { padding: 72px 0; }
+      .section { padding: 80px 0; }
       .nav-links { display: none; }
       .hamburger { display: flex; }
       .pillars-grid { grid-template-columns: 1fr; }
-      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
-      .join-form-wrap { padding: 32px 24px; }
-      .hero-text p { font-size: 1rem; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .hero-h1 { font-size: clamp(3rem, 16vw, 5rem); }
+      .about-float-badge { right: 0; }
+      .container { padding: 0 20px; }
     }
     @media (max-width: 480px) {
-      .about-badge-float { right: 12px; bottom: -16px; }
-      .hero-buttons { flex-direction: column; align-items: flex-start; }
+      .hero-cta-row { flex-direction: column; align-items: flex-start; }
       .cta-buttons { flex-direction: column; align-items: center; }
     }
 
-    /* ===== ANNOUNCEMENT BAR ===== */
-    .announce-bar {
-      background: var(--red);
-      color: #fff;
-      text-align: center;
-      font-family: 'Poppins', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 10px 24px;
-      letter-spacing: 0.03em;
-    }
-    .announce-bar a {
-      color: rgba(255,255,255,0.9);
-      text-decoration: underline;
-      margin-left: 8px;
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
   </style>
 </head>
 <body>
 
+  <!-- CURSOR -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <img src="logo.png" alt="ARBR" class="loader-logo" />
+    <div class="loader-bar-track">
+      <div class="loader-bar-fill"></div>
+    </div>
+  </div>
+
+  <!-- ANNOUNCE BAR -->
+  <div class="announce-bar">
+    Amuwo-Odofin <span>•</span> Lagos, Nigeria <span>•</span> Join the Movement for Better Representation <span>•</span> People First. Integrity Always.
+  </div>
 
   <!-- NAVBAR -->
   <nav id="navbar">
     <div class="container">
       <div class="nav-inner">
         <a href="#" class="nav-logo">
-          <img src="./logo.png" alt="ARBR Logo" width="75" height="75">
-          <div class="logo-text"><span class="top">Amuwo Residents</span><span class="bottom">for Better Representation</span></div>
+          <img src="logo.png" alt="ARBR Logo" />
+          <div class="nav-logo-text">
+            Amuwo Residents<br>for <em>Better</em> Representation
+          </div>
         </a>
         <ul class="nav-links">
           <li><a href="#about">About</a></li>
@@ -1136,7 +1443,7 @@
           <li><a href="#why">Why It Matters</a></li>
           <li><a href="#join">Join</a></li>
           <li><a href="#contact">Contact</a></li>
-          <li><a href="#join" class="nav-cta">Join the Movement</a></li>
+          <li><a href="#join" class="nav-join">Join the Movement</a></li>
         </ul>
         <button class="hamburger" id="hamburger" aria-label="Toggle Menu">
           <span></span><span></span><span></span>
@@ -1149,99 +1456,100 @@
       <a href="#why" class="mobile-link">Why It Matters</a>
       <a href="#join" class="mobile-link">Join</a>
       <a href="#contact" class="mobile-link">Contact</a>
-      <a href="#join" class="nav-cta mobile-link">Join the Movement →</a>
+      <a href="#join" class="nav-join mobile-link">Join the Movement →</a>
     </div>
   </nav>
 
   <!-- HERO -->
   <section id="hero">
-    <div class="hero-bg-pattern"></div>
-    <div class="hero-accent"></div>
-    <div class="hero-accent-2"></div>
-    <div class="hero-stripe"></div>
-    <div class="container hero-content">
-      <div class="hero-inner">
-        <div class="hero-text">
-          <div class="pill">
-            <span class="dot"></span>
-            Amuwo-Odofin - Lagos, Nigeria
+    <!-- Decorative sun rays (from brand logo motif) -->
+    <div class="hero-sun-rays" aria-hidden="true">
+      <svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(800,0)" fill="white">
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(-10 0 0)"/>
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(0 0 0)"/>
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(10 0 0)"/>
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(20 0 0)"/>
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(30 0 0)"/>
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(40 0 0)"/>
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(50 0 0)"/>
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(60 0 0)"/>
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(70 0 0)"/>
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(80 0 0)"/>
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(90 0 0)"/>
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(100 0 0)"/>
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(-20 0 0)"/>
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(-30 0 0)"/>
+          <rect x="-20" y="-400" width="18" height="800" transform="rotate(-40 0 0)"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="hero-red-bar"></div>
+    <div class="hero-bottom-stripe"></div>
+
+    <!-- Candidate image - right aligned, fades over blue -->
+
+    <div class="hero-body">
+      <div class="container">
+        <div class="hero-text-wrap">
+          <div class="hero-location-badge">
+            <div class="pulse"></div>
+            Amuwo-Odofin · Lagos, Nigeria
           </div>
-          <h1>Better Representation<br>Starts With <em>You</em></h1>
-          <p>Join residents across Amuwo-Odofin who are demanding accountable leadership, stronger communities, and real development that touches everyday lives.</p>
-          <div class="hero-buttons">
-            <a href="#join" class="btn btn-primary">
-              ✊ Join the Movement
+
+          <h1 class="hero-h1">
+            <span class="line"><span>Better</span></span>
+            <span class="line"><span class="accent">Representation</span></span>
+          </h1>
+
+          <div class="hero-rule" id="heroRule"></div>
+
+          <p class="hero-sub" id="heroSub">
+            Join thousands of Amuwo-Odofin residents demanding accountable leadership, stronger communities, and real development that touches everyday lives.
+          </p>
+
+          <div class="hero-cta-row" id="heroCtaRow">
+            <a href="#join" class="btn-hero-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Join the Movement
             </a>
-            <a href="#why" class="btn btn-outline">
-              📋 See the Issues
+            <a href="#why" class="btn-hero-ghost">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+              See the Issues
             </a>
           </div>
-        </div>
-        <div class="hero-visual">
-          <div class="hero-card">
-            <p class="hero-card-title">Movement Snapshot</p>
-            <div class="hero-stat-list">
-              <div class="hero-stat-item">
-                <div class="hero-stat-icon red">🏘️</div>
-                <div class="hero-stat-text">
-                  <strong>200+</strong>
-                  <span>Residents Joined</span>
-                </div>
-              </div>
-              <div class="hero-stat-item">
-                <div class="hero-stat-icon green">📣</div>
-                <div class="hero-stat-text">
-                  <strong>5+</strong>
-                  <span>Community Issues Reported</span>
-                </div>
-              </div>
-              <div class="hero-stat-item">
-                <div class="hero-stat-icon yellow">🗺️</div>
-                <div class="hero-stat-text">
-                  <strong>2+</strong>
-                  <span>Wards Engaged Across Constituency</span>
-                </div>
-              </div>
-            </div>
-            <div class="hero-join-quick">
-              <p>Already joined by residents like you:</p>
-              <div class="mini-avatars">
-                <div class="avatar">AD</div>
-                <div class="avatar">BF</div>
-                <div class="avatar">CK</div>
-                <div class="avatar">EM</div>
-                <div class="avatar">TR</div>
-                <div class="avatar-more">+95</div>
-              </div>
-            </div>
-          </div>
+
+          
         </div>
       </div>
     </div>
   </section>
 
-  <!-- TRUST STRIP -->
+  <!-- TRUST BAR -->
   <section id="trust">
-    <div class="trust-inner">
-      <div class="trust-item reveal">
-        <div class="trust-icon">👥</div>
-        <div>
-          <div class="trust-num">200+</div>
-          <div class="trust-label">Residents Joined & Growing</div>
+    <div class="container">
+      <div class="trust-inner">
+        <div class="trust-item r">
+          <div class="trust-icon-wrap">🏛️</div>
+          <div>
+            <div class="trust-num count-num" data-target="200">0</div>
+            <div class="trust-label">+ Residents Mobilised</div>
+          </div>
         </div>
-      </div>
-      <div class="trust-item reveal reveal-delay-2">
-        <div class="trust-icon">📝</div>
-        <div>
-          <div class="trust-num">20+</div>
-          <div class="trust-label">Community Issues Reported</div>
+        <div class="trust-item r r-d1">
+          <div class="trust-icon-wrap">📣</div>
+          <div>
+            <div class="trust-num count-num" data-target="5">0</div>
+            <div class="trust-label">+ Community Actions</div>
+          </div>
         </div>
-      </div>
-      <div class="trust-item reveal reveal-delay-3">
-        <div class="trust-icon">🗺️</div>
-        <div>
-          <div class="trust-num">10+</div>
-          <div class="trust-label">Wards Actively Engaged</div>
+        <div class="trust-item r r-d2">
+          <div class="trust-icon-wrap">🗺️</div>
+          <div>
+            <div class="trust-num count-num" data-target="10">0</div>
+            <div class="trust-label">Wards Active</div>
+          </div>
         </div>
       </div>
     </div>
@@ -1250,127 +1558,215 @@
   <!-- ABOUT -->
   <section id="about" class="section">
     <div class="container">
-      <div class="about-inner">
-        <div class="about-visual reveal">
-          <div class="about-card-main">
-            <div class="about-quote">
-              To build a united, people-centered Amuwo where leadership delivers real results - not promises.
-            </div>
-            <div class="about-signature">
-              <div class="about-sig-badge">AR</div>
-              <div class="about-sig-text">
-                <strong>Our Mission</strong>
-                <span>ARBR - Amuwo Residents for Better Representation</span>
-              </div>
-            </div>
+      <div class="about-grid">
+        <div class="about-left r">
+          <div class="about-img-frame">
+            <img src="logo.png" alt="ARBR Logo Full" />
           </div>
-          <div class="about-badge-float">
-            <span class="emoji">🏆</span>
-            <div>
-              <strong>People First</strong>
-              <span>Always & Always</span>
-            </div>
+          <div class="about-float-badge">
+            <strong>2025</strong>
+            <span>Founded</span>
           </div>
         </div>
-        <div class="about-text reveal reveal-delay-2">
-          <div class="tag">Who We Are</div>
-          <h2>A Movement Built on Purpose, Not Politics</h2>
-          <p>ARBR is a grassroots civic movement founded by residents of Amuwo-Odofin who believe that quality leadership, real accountability, and genuine community development are not too much to ask for.</p>
-          <p>We are not a political party. We are the people - organized, united, and determined to reshape the future of our constituency.</p>
-          <div class="about-points">
-            <div class="about-point">
-              <div class="check">✓</div>
-              <p>Deepening grassroots mobilization across all wards</p>
+        <div class="about-right">
+          <div class="eyebrow r">Who We Are</div>
+          <h2 class="section-title section-title--dark r r-d1">
+            <span class="section-title--split">
+              A Grassroots<br><em>Civic Force</em>
+            </span>
+          </h2>
+          <div class="about-body r r-d2">
+            <p>ARBR - Amuwo Residents for Better Representation - is a people-powered movement born out of a shared frustration: Amuwo-Odofin deserves better, and we're here to demand it.</p>
+            <p>We unite ordinary residents, community leaders, and civic-minded citizens to hold leadership accountable, amplify community voices, and push for development that actually reaches people on the ground.</p>
+          </div>
+          <div class="about-checks">
+            <div class="about-check r r-d2">
+              <div class="about-check-mark">
+                <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+              </div>
+              <div class="about-check-text">Non-partisan. People-first. Community-driven movement for real change.</div>
             </div>
-            <div class="about-point">
-              <div class="check">✓</div>
-              <p>Strengthening voter awareness and civic education</p>
+            <div class="about-check r r-d3">
+              <div class="about-check-mark">
+                <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+              </div>
+              <div class="about-check-text">Transparent operations - every action taken in the community's interest.</div>
             </div>
-            <div class="about-point">
-              <div class="check">✓</div>
-              <p>Promoting leaders with competence, integrity, and measurable impact</p>
-            </div>
-            <div class="about-point">
-              <div class="check">✓</div>
-              <p>Unifying stakeholders above personal and political gain</p>
+            <div class="about-check r r-d4">
+              <div class="about-check-mark">
+                <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+              </div>
+              <div class="about-check-text">Backed by Comrade Ayodele Adewale - APC frontline aspirant, House of Reps, Amuwo-Odofin.</div>
             </div>
           </div>
-          <a href="#join" class="btn btn-blue">Become a Member →</a>
         </div>
       </div>
     </div>
   </section>
 
   <!-- PILLARS -->
-  <section id="pillars" class="section">
+  <section id="pillars" class="section section-dark">
+    <div class="pillars-sun" aria-hidden="true">
+      <svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(400,400)" fill="white">
+          <rect x="-10" y="-400" width="20" height="800" transform="rotate(0)"/>
+          <rect x="-10" y="-400" width="20" height="800" transform="rotate(18)"/>
+          <rect x="-10" y="-400" width="20" height="800" transform="rotate(36)"/>
+          <rect x="-10" y="-400" width="20" height="800" transform="rotate(54)"/>
+          <rect x="-10" y="-400" width="20" height="800" transform="rotate(72)"/>
+          <rect x="-10" y="-400" width="20" height="800" transform="rotate(90)"/>
+          <rect x="-10" y="-400" width="20" height="800" transform="rotate(108)"/>
+          <rect x="-10" y="-400" width="20" height="800" transform="rotate(126)"/>
+          <rect x="-10" y="-400" width="20" height="800" transform="rotate(144)"/>
+          <rect x="-10" y="-400" width="20" height="800" transform="rotate(162)"/>
+        </g>
+      </svg>
+    </div>
     <div class="container">
-      <div class="section-header reveal">
-        <div class="tag">Our Agenda</div>
-        <h2>Four Pillars Driving Our Movement</h2>
-        <p>Every initiative we pursue is rooted in these core commitments to the people of Amuwo-Odofin.</p>
+      <div class="pillars-header">
+        <div>
+          <div class="eyebrow r" style="color: rgba(255,255,255,0.5);">Our Agenda</div>
+          <h2 class="section-title section-title--light r r-d1">Four<br><em>Pillars</em></h2>
+        </div>
+        <p class="section-body section-body--light r r-d2">The foundations of the change we're demanding for Amuwo-Odofin. These aren't slogans - they're commitments.</p>
       </div>
       <div class="pillars-grid">
-        <div class="pillar-card reveal">
-          <span class="pillar-icon">🔍</span>
+        <div class="pillar-card r">
+          <div class="pillar-num">01</div>
+          <div class="pillar-icon-wrap">👥</div>
+          <h3>People First</h3>
+          <p>Every policy, every decision, every action must serve the people of Amuwo-Odofin. Your voice is the only voice that matters.</p>
+        </div>
+        <div class="pillar-card r r-d1">
+          <div class="pillar-num">02</div>
+          <div class="pillar-icon-wrap">🎯</div>
+          <h3>Results Driven</h3>
+          <p>No more talk. We focus on measurable outcomes - infrastructure built, problems solved, services delivered on time.</p>
+        </div>
+        <div class="pillar-card r r-d2">
+          <div class="pillar-num">03</div>
+          <div class="pillar-icon-wrap">🛡️</div>
+          <h3>Integrity</h3>
+          <p>Honesty. Always. We operate with full transparency, zero tolerance for corruption, and unwavering ethical standards.</p>
+        </div>
+        <div class="pillar-card r r-d3">
+          <div class="pillar-num">04</div>
+          <div class="pillar-icon-wrap">🤝</div>
           <h3>Accountability</h3>
-          <p>We demand transparency from elected officials and hold leadership to measurable standards. Public service must be answerable to the public - always.</p>
-        </div>
-        <div class="pillar-card reveal reveal-delay-1">
-          <span class="pillar-icon">🏗️</span>
-          <h3>Infrastructure</h3>
-          <p>Paved roads, reliable power, clean water, and functional public spaces - we advocate for the basic infrastructure that every Amuwo resident deserves.</p>
-        </div>
-        <div class="pillar-card reveal reveal-delay-2">
-          <span class="pillar-icon">🌱</span>
-          <h3>Youth Empowerment</h3>
-          <p>Our young people are our greatest asset. We push for skills development, employment opportunities, and platforms that give the youth a real seat at the table.</p>
-        </div>
-        <div class="pillar-card reveal reveal-delay-3">
-          <span class="pillar-icon">🤝</span>
-          <h3>Community Unity</h3>
-          <p>Progress requires a common front. We build bridges across wards, tribes, and divides - because a united Amuwo is an unstoppable Amuwo.</p>
+          <p>We demand better and we deliver better. Every promise made is tracked. Every leader is held to account - publicly.</p>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-section" role="marquee" aria-label="Community values">
+    <div class="marquee-track">
+      <!-- Set 1 -->
+      <div class="marquee-item">People First <div class="marquee-sep"></div></div>
+      <div class="marquee-item">Results Driven <div class="marquee-sep"></div></div>
+      <div class="marquee-item">Integrity Always <div class="marquee-sep"></div></div>
+      <div class="marquee-item">Accountability Now <div class="marquee-sep"></div></div>
+      <div class="marquee-item">Our Community <div class="marquee-sep"></div></div>
+      <div class="marquee-item">Our Voice <div class="marquee-sep"></div></div>
+      <div class="marquee-item">Our Future <div class="marquee-sep"></div></div>
+      <div class="marquee-item">Amuwo-Odofin Rising <div class="marquee-sep"></div></div>
+      <!-- Set 2 (duplicate for seamless loop) -->
+      <div class="marquee-item">People First <div class="marquee-sep"></div></div>
+      <div class="marquee-item">Results Driven <div class="marquee-sep"></div></div>
+      <div class="marquee-item">Integrity Always <div class="marquee-sep"></div></div>
+      <div class="marquee-item">Accountability Now <div class="marquee-sep"></div></div>
+      <div class="marquee-item">Our Community <div class="marquee-sep"></div></div>
+      <div class="marquee-item">Our Voice <div class="marquee-sep"></div></div>
+      <div class="marquee-item">Our Future <div class="marquee-sep"></div></div>
+      <div class="marquee-item">Amuwo-Odofin Rising <div class="marquee-sep"></div></div>
+    </div>
+  </div>
 
   <!-- WHY IT MATTERS -->
-  <section id="why" class="section">
+  <section id="why" class="section section-white">
     <div class="container">
-      <div class="why-inner">
-        <div class="why-text reveal">
-          <div class="tag">Why This Matters</div>
-          <h2>The Problems Are Real. The Time to Act Is Now.</h2>
-          <p>Amuwo-Odofin is a constituency with immense potential - but that potential has been consistently undermined by poor governance, broken promises, and a leadership culture that serves the few over the many. That changes with us.</p>
-          <a href="#join" class="btn btn-primary">Add Your Voice →</a>
+      <div class="why-grid">
+        <div class="why-left">
+          <div class="eyebrow r">Why It Matters</div>
+          <h2 class="section-title section-title--dark r r-d1">The Issues<br><em>We Face</em></h2>
+          <p class="section-body r r-d2" style="margin-top: 20px; max-width: 420px;">
+            Amuwo-Odofin has immense potential - yet residents live with persistent, unaddressed problems year after year.
+          </p>
+          <div class="why-issues">
+            <div class="why-issue r r-d2">
+              <div class="why-issue-num">01</div>
+              <div class="why-issue-body">
+                <strong>Infrastructure Neglect</strong>
+                <span>Roads, drainage, and public spaces in a state of disrepair</span>
+              </div>
+              <div class="why-arrow">→</div>
+            </div>
+            <div class="why-issue r r-d3">
+              <div class="why-issue-num">02</div>
+              <div class="why-issue-body">
+                <strong>Healthcare Gaps</strong>
+                <span>Inadequate health facilities failing residents daily</span>
+              </div>
+              <div class="why-arrow">→</div>
+            </div>
+            <div class="why-issue r r-d3">
+              <div class="why-issue-num">03</div>
+              <div class="why-issue-body">
+                <strong>Education Deficits</strong>
+                <span>Schools underfunded and underequipped for the future</span>
+              </div>
+              <div class="why-arrow">→</div>
+            </div>
+            <div class="why-issue r r-d4">
+              <div class="why-issue-num">04</div>
+              <div class="why-issue-body">
+                <strong>Poor Representation</strong>
+                <span>Elected officials absent, voices unheard, promises unmet</span>
+              </div>
+              <div class="why-arrow">→</div>
+            </div>
+            <div class="why-issue r r-d4">
+              <div class="why-issue-num">05</div>
+              <div class="why-issue-body">
+                <strong>Youth Unemployment</strong>
+                <span>Talent without opportunity; no economic empowerment plan</span>
+              </div>
+              <div class="why-arrow">→</div>
+            </div>
+          </div>
         </div>
-        <div class="why-issues reveal reveal-delay-2">
-          <div class="why-issue">
-            <div class="why-issue-icon">🛣️</div>
-            <div>
-              <h4>Crumbling Infrastructure</h4>
-              <p>Many roads in our community remain unpaved or in disrepair for years. Flood-prone areas suffer each rainy season with no lasting solution in sight.</p>
+        <div class="why-right">
+          <div class="why-quote-card r r-d1">
+            <p class="why-quote-text">"We are not asking for the impossible. We are asking for basic dignity, functioning services, and leaders who actually show up."</p>
+            <div class="why-quote-author">
+              <div class="why-quote-avatar">AA</div>
+              <div class="why-quote-meta">
+                <strong>Comrade Ayodele Adewale</strong>
+                <span>Frontline APC Aspirant · House of Reps · Amuwo-Odofin</span>
+              </div>
             </div>
           </div>
-          <div class="why-issue">
-            <div class="why-issue-icon">📢</div>
-            <div>
-              <h4>Weak Representation</h4>
-              <p>Too many residents have no voice in decisions that affect their daily lives. Elected officials are often absent, inaccessible, or simply disconnected from the grassroots.</p>
+          <div class="why-pillars-mini r r-d2">
+            <div class="why-pillar-mini">
+              <div class="icon">🏥</div>
+              <strong>Healthcare</strong>
+              <span>Better clinics. Better access. Better outcomes.</span>
             </div>
-          </div>
-          <div class="why-issue">
-            <div class="why-issue-icon">⚖️</div>
-            <div>
-              <h4>Lack of Accountability</h4>
-              <p>Budgets are not published. Projects are abandoned. Leaders face no consequence for non-performance. The culture of impunity must end.</p>
+            <div class="why-pillar-mini">
+              <div class="icon">🏫</div>
+              <strong>Education</strong>
+              <span>Properly funded, future-ready schools.</span>
             </div>
-          </div>
-          <div class="why-issue">
-            <div class="why-issue-icon">🎓</div>
-            <div>
-              <h4>Limited Opportunities for Youth</h4>
-              <p>Young people in Amuwo-Odofin face high unemployment and limited access to skills training - despite a constituency full of energy and talent.</p>
+            <div class="why-pillar-mini">
+              <div class="icon">🛣️</div>
+              <strong>Infrastructure</strong>
+              <span>Roads, drainage, and public spaces that work.</span>
+            </div>
+            <div class="why-pillar-mini">
+              <div class="icon">💼</div>
+              <strong>Economy</strong>
+              <span>Jobs, opportunity, and economic inclusion.</span>
             </div>
           </div>
         </div>
@@ -1378,109 +1774,98 @@
     </div>
   </section>
 
-  <!-- JOIN SECTION -->
+  <!-- JOIN FORM -->
   <section id="join" class="section">
     <div class="container">
-      <div class="join-inner">
-        <div class="join-info reveal">
-          <div class="tag">Join Us</div>
-          <h2>Be Part of Something That Actually Matters</h2>
-          <p>Your name on this list is more than a signature - it's a statement that you believe Amuwo-Odofin deserves better. Join residents from all 10 wards and help us build a movement that cannot be ignored.</p>
-          <div class="join-benefits">
-            <div class="join-benefit">
-              <div class="join-benefit-icon">📲</div>
+      <div class="join-grid">
+        <div class="join-left">
+          <div class="eyebrow r">Take Action</div>
+          <h2 class="section-title section-title--dark r r-d1">Join the<br><em>Movement</em></h2>
+          <p class="section-body join-sub r r-d2">
+            Hundreds of your neighbours have already taken the first step. Real change starts with a decision. Make yours today - it's free, it's local, and it matters.
+          </p>
+          <div class="join-features">
+            <div class="join-feature r r-d2">
+              <div class="join-feature-icon">📣</div>
               <div>
-                <h4>Stay Informed</h4>
-                <p>Get real-time updates on community issues, civic events, and movement milestones.</p>
+                <strong>Amplify Your Voice</strong>
+                <span>Be heard through structured community advocacy and direct representation</span>
               </div>
             </div>
-            <div class="join-benefit">
-              <div class="join-benefit-icon">🗳️</div>
+            <div class="join-feature r r-d3">
+              <div class="join-feature-icon">📊</div>
               <div>
-                <h4>Voter Awareness Programs</h4>
-                <p>Access free civic education resources and learn how to make your vote count.</p>
+                <strong>Track Community Progress</strong>
+                <span>Get updates on issues raised, actions taken, and results delivered</span>
               </div>
             </div>
-            <div class="join-benefit">
-              <div class="join-benefit-icon">🤝</div>
+            <div class="join-feature r r-d4">
+              <div class="join-feature-icon">🤝</div>
               <div>
-                <h4>Community Network</h4>
-                <p>Connect with hundreds of like-minded residents across all wards of Amuwo-Odofin.</p>
-              </div>
-            </div>
-            <div class="join-benefit">
-              <div class="join-benefit-icon">📣</div>
-              <div>
-                <h4>Your Voice, Amplified</h4>
-                <p>Report issues directly and have them escalated to relevant stakeholders through our network.</p>
+                <strong>Build the Network</strong>
+                <span>Connect with like-minded residents across all wards in Amuwo-Odofin</span>
               </div>
             </div>
           </div>
         </div>
-        <div class="join-form-wrap reveal reveal-delay-2">
-          <div id="joinFormContainer">
-            <h3>Join the Movement</h3>
-            <p>Free to join. No politics. Just people demanding better.</p>
-            <div class="form-group">
-              <label for="fullname">Full Name <span style="color:var(--red)">*</span></label>
-              <input type="text" id="fullname" class="form-control" placeholder="e.g. Adebayo Johnson" required />
+        <div class="join-right r r-d2">
+          <div class="join-form-wrap">
+            <div id="joinFormContainer">
+              <div class="form-title">Become a Member</div>
+              <p class="form-sub">Free. No politics. Just community.</p>
+              <div class="form-group">
+                <label class="form-label" for="fullname">Full Name</label>
+                <input class="form-input" type="text" id="fullname" placeholder="Your full name" autocomplete="name" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="phone">Phone Number</label>
+                <input class="form-input" type="tel" id="phone" placeholder="+234 800 000 0000" autocomplete="tel" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="ward">Your Ward</label>
+                <select class="form-select" id="ward">
+                  <option value="">Select your ward</option>
+                  <option value="1">Ward 1 – Oriade</option>
+                  <option value="2">Ward 2 – Festac Town</option>
+                  <option value="3">Ward 3 – Satellite Town</option>
+                  <option value="4">Ward 4 – Mile 2</option>
+                  <option value="5">Ward 5 – Volkswagen/Kirikiri</option>
+                  <option value="6">Ward 6 – Amuwo-Odofin Estate</option>
+                  <option value="7">Ward 7 – Apple Junction</option>
+                  <option value="8">Ward 8 – Maza-Maza</option>
+                  <option value="9">Ward 9 – Navy Town</option>
+                  <option value="10">Ward 10 – Ijegun</option>
+                </select>
+              </div>
+              <p class="form-privacy">🔒 Your data is safe. We never sell or share it.</p>
+              <button class="btn-form-submit" onclick="handleJoin()">Join the Movement →</button>
             </div>
-            <div class="form-group">
-              <label for="phone">Phone Number <span style="color:var(--red)">*</span></label>
-              <input type="tel" id="phone" class="form-control" placeholder="e.g. 08012345678" required />
+            <div class="form-success" id="formSuccess">
+              <span class="success-icon">🎉</span>
+              <h3>Welcome to ARBR!</h3>
+              <p>You're now part of something real. We'll be in touch with updates, community events, and next steps for your ward.</p>
+              <a href="https://wa.me/2348030767359?text=Hello%20ARBR!%20I%20just%20joined%20the%20movement!" target="_blank" class="wa-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Join Our WhatsApp Community
+              </a>
             </div>
-            <div class="form-group">
-              <label for="email">Email Address <span class="opt">(Optional)</span></label>
-              <input type="email" id="email" class="form-control" placeholder="e.g. you@example.com" />
-            </div>
-            <div class="form-group">
-              <label for="ward">Your Ward <span style="color:var(--red)">*</span></label>
-              <select id="ward" class="form-control" required>
-                <option value="" disabled selected>— Select your ward -</option>
-                <option value="ward1">Ward 1 - Amuwo Odofin</option>
-                <option value="ward2">Ward 2 - Festac Town</option>
-                <option value="ward3">Ward 3 - Satellite Town</option>
-                <option value="ward4">Ward 4 - Ago Palace Way</option>
-                <option value="ward5">Ward 5 - Ijegun</option>
-                <option value="ward6">Ward 6 - Kirikiri</option>
-                <option value="ward7">Ward 7 - Mile 2</option>
-                <option value="ward8">Ward 8 - Ojo Road</option>
-                <option value="ward9">Ward 9 - Oriade</option>
-                <option value="ward10">Ward 10 - Ijora-Badia</option>
-              </select>
-            </div>
-            <button type="button" class="btn btn-primary form-submit" id="joinBtn" onclick="handleJoin()">
-              ✊ Join the Movement
-            </button>
-            <p class="form-note">
-              🔒 <span>Your information is private and secure.</span>
-              We never sell or share your data.
-            </p>
-          </div>
-          <div class="form-success" id="formSuccess">
-            <span class="success-icon">🎉</span>
-            <h3>Welcome to the Movement!</h3>
-            <p>You're now part of something real. We'll be in touch with next steps, updates, and community events in your ward.</p>
-            <a href="https://wa.me/2348030767359?text=Hello%20ARBR!%20I%20just%20joined%20the%20movement%20and%20I%27m%20ready%20to%20make%20Amuwo-Odofin%20better!" target="_blank" class="wa-btn">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-              Join Our WhatsApp Community
-            </a>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA SECTION -->
+  <!-- CTA -->
   <section id="cta">
-    <div class="container cta-inner">
-      <div class="tag">Take Action</div>
-      <h2>Be Part of the Movement<br>Shaping Amuwo's Future</h2>
-      <p>Hundreds of your neighbours have already taken the first step. The question is - will you? Together, we set a new standard of leadership and development for Amuwo-Odofin.</p>
-      <div class="cta-buttons">
-        <a href="#join" class="btn btn-white">✊ Join Now - It's Free</a>
-        <a href="https://wa.me/2348030767359?text=I%20want%20to%20join%20ARBR" target="_blank" class="btn-outline-white">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <div class="sun-bg" aria-hidden="true"></div>
+    <div class="container">
+      <div class="eyebrow r" style="color: rgba(255,255,255,0.4); justify-content: center;">Together We Rise</div>
+      <h2 class="r r-d1">Be Part of<br>the <em>Future</em></h2>
+      <p class="r r-d2">Hundreds of your neighbours have already taken the first step. The question is - will you?</p>
+      <div class="cta-buttons r r-d3">
+        <a href="#join" class="btn-cta-white">✊ Join Now - It's Free</a>
+        <a href="https://wa.me/2348030767359?text=I%20want%20to%20join%20ARBR" target="_blank" class="btn-cta-ghost">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           WhatsApp Us
         </a>
       </div>
@@ -1489,17 +1874,18 @@
 
   <!-- FOOTER -->
   <footer id="contact">
+    <div class="footer-top-bar"></div>
     <div class="container">
       <div class="footer-inner">
         <div class="footer-brand">
-          <div class="nav-logo">
-            <img src="logo.png" alt="ARBR Logo" width="50" height="50">
-            Amuwo Residents <br>for Better Representation
+          <div class="footer-brand-logo">
+            <img src="logo.png" alt="ARBR Logo" />
+            <div class="footer-brand-name">Amuwo Residents<br>for Better Representation</div>
           </div>
-          <p>Amuwo Residents for Better Representation - a grassroots civic movement demanding accountable, people-centred leadership in Amuwo-Odofin, Lagos.</p>
+          <p>A grassroots civic movement demanding accountable, people-centred leadership in Amuwo-Odofin, Lagos. Our community. Our voice. Our future.</p>
           <div class="social-links">
             <a href="#" class="social-link" title="Facebook">𝑓</a>
-            <a href="#" class="social-link" title="Twitter/X">𝕏</a>
+            <a href="#" class="social-link" title="X / Twitter">𝕏</a>
             <a href="#" class="social-link" title="Instagram">📸</a>
             <a href="https://wa.me/2348030767359" class="social-link" target="_blank" title="WhatsApp">💬</a>
           </div>
@@ -1533,122 +1919,227 @@
       </div>
       <div class="footer-bottom">
         <p>© 2025 Amuwo Residents for Better Representation (ARBR). All rights reserved.</p>
-        <p class="built">United We Stand. Stronger Together.</p>
+        <div class="footer-tagline">United We Stand · Stronger Together</div>
       </div>
     </div>
   </footer>
 
-  <!-- SCROLL TO TOP -->
-  <button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">▲</button>
+  <!-- SCROLL TOP -->
+  <button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
 
   <script>
-    // ===== NAVBAR SCROLL =====
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 60);
-      document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 400);
+    /* ====================================================
+       LOADER
+    ==================================================== */
+    window.addEventListener('load', () => {
+      const loader = document.getElementById('loader');
+      setTimeout(() => {
+        loader.style.opacity = '0';
+        loader.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => { loader.style.display = 'none'; initHero(); }, 500);
+      }, 1400);
     });
 
-    // ===== HAMBURGER =====
+    /* ====================================================
+       CURSOR
+    ==================================================== */
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function animateCursor() {
+      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+    document.querySelectorAll('a, button, .pillar-card, .why-issue').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        dot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+        ring.style.width = '56px'; ring.style.height = '56px'; ring.style.opacity = '0.35';
+      });
+      el.addEventListener('mouseleave', () => {
+        dot.style.transform = 'translate(-50%, -50%) scale(1)';
+        ring.style.width = '36px'; ring.style.height = '36px'; ring.style.opacity = '0.6';
+      });
+    });
+
+    /* ====================================================
+       NAVBAR SCROLL
+    ==================================================== */
+    const navbar = document.getElementById('navbar');
+    const announceH = document.querySelector('.announce-bar').offsetHeight;
+    let lastScrollY = 0;
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      navbar.classList.toggle('scrolled', scrollY > 60);
+      navbar.style.top = scrollY < lastScrollY || scrollY < 100
+        ? announceH + 'px'
+        : '0';
+      lastScrollY = scrollY;
+      document.getElementById('scrollTop').classList.toggle('show', scrollY > 400);
+    });
+    navbar.style.top = announceH + 'px';
+
+    /* ====================================================
+       HAMBURGER
+    ==================================================== */
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobileMenu');
     hamburger.addEventListener('click', () => {
       hamburger.classList.toggle('open');
       mobileMenu.classList.toggle('open');
     });
-    document.querySelectorAll('.mobile-link').forEach(link => {
-      link.addEventListener('click', () => {
-        hamburger.classList.remove('open');
-        mobileMenu.classList.remove('open');
-      });
-    });
+    document.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    }));
 
-    // ===== SCROLL REVEAL =====
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
+    /* ====================================================
+       HERO ENTRANCE
+    ==================================================== */
+    function initHero() {
+      // Lines stagger
+      const lines = document.querySelectorAll('.hero-h1 .line span');
+      lines.forEach((el, i) => {
+        el.style.transition = `transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) ${0.1 + i * 0.1}s`;
+        el.style.transform = 'translateY(0)';
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    reveals.forEach(el => observer.observe(el));
 
-    // ===== ACTIVE NAV LINK =====
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-links a');
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(section => {
-        if (window.scrollY >= section.offsetTop - 120) current = section.getAttribute('id');
-      });
-      navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === '#' + current) link.classList.add('active');
-      });
-    });
+      // Rule
+      const rule = document.getElementById('heroRule');
+      setTimeout(() => {
+        rule.style.transition = 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+        rule.style.transform = 'scaleX(1)';
+      }, 400);
 
-    // ===== COUNTER ANIMATION =====
-    function animateCounter(el, target, suffix='') {
-      let start = 0;
-      const duration = 1800;
-      const step = (timestamp) => {
-        if (!start) start = timestamp;
-        const progress = Math.min((timestamp - start) / duration, 1);
-        const value = Math.floor(progress * target);
-        el.textContent = value + suffix;
-        if (progress < 1) requestAnimationFrame(step);
-        else el.textContent = target + suffix;
-      };
+      // Sub + CTA
+      ['heroSub', 'heroCtaRow', 'heroStats'].forEach((id, i) => {
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          if (el) { el.style.transition = 'opacity 0.8s ease, transform 0.8s cubic-bezier(0.16,1,0.3,1)'; el.style.opacity = '1'; }
+        }, 500 + i * 150);
+      });
+
+      // Candidate image
+      const cand = document.getElementById('heroCandidate');
+      if (cand) {
+        setTimeout(() => {
+          cand.style.transition = 'opacity 1.2s ease 0.2s, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s';
+          cand.style.opacity = '1';
+          cand.style.transform = 'translateX(0)';
+        }, 200);
+      }
+
+      // Count up stats
+      setTimeout(() => animateCounters(), 800);
+    }
+
+    /* ====================================================
+       COUNTER ANIMATION
+    ==================================================== */
+    function animateCounter(el, target, duration = 1600) {
+      let start = null;
+      function step(ts) {
+        if (!start) start = ts;
+        const p = Math.min((ts - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(ease * target);
+        if (p < 1) requestAnimationFrame(step);
+        else el.textContent = target;
+      }
       requestAnimationFrame(step);
     }
 
-    const counterObs = new IntersectionObserver((entries) => {
+    function animateCounters() {
+      document.querySelectorAll('.count-num').forEach(el => {
+        const t = parseInt(el.dataset.target);
+        if (t) animateCounter(el, t);
+      });
+    }
+
+    /* ====================================================
+       SCROLL REVEAL
+    ==================================================== */
+    const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) {
-          const nums = e.target.querySelectorAll('.trust-num');
-          nums[0] && animateCounter(nums[0], 200, '+');
-          nums[1] && animateCounter(nums[1], 20, '+');
-          nums[2] && animateCounter(nums[2], 10, '+');
-          counterObs.unobserve(e.target);
+          e.target.classList.add('in');
+          revealObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
+    document.querySelectorAll('.r').forEach(el => revealObserver.observe(el));
+
+    // Trust counter observer
+    const trustObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('.count-num').forEach(el => {
+            const t = parseInt(el.dataset.target);
+            if (t) animateCounter(el, t);
+          });
+          trustObs.unobserve(e.target);
         }
       });
     }, { threshold: 0.4 });
     const trustSection = document.getElementById('trust');
-    if (trustSection) counterObs.observe(trustSection);
+    if (trustSection) trustObs.observe(trustSection);
 
-    // ===== JOIN FORM =====
-    function handleJoin() {
-      const name = document.getElementById('fullname').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const ward = document.getElementById('ward').value;
-
-      if (!name) { alert('Please enter your full name.'); return; }
-      if (!phone) { alert('Please enter your phone number.'); return; }
-      if (!ward) { alert('Please select your ward.'); return; }
-
-      const btn = document.getElementById('joinBtn');
-      btn.textContent = 'Submitting...';
-      btn.disabled = true;
-
-      setTimeout(() => {
-        document.getElementById('joinFormContainer').style.display = 'none';
-        document.getElementById('formSuccess').classList.add('show');
-      }, 1200);
-    }
-
-    // ===== SMOOTH SCROLL =====
+    /* ====================================================
+       SMOOTH SCROLL
+    ==================================================== */
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', function(e) {
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
           e.preventDefault();
-          const offset = 70;
-          const top = target.getBoundingClientRect().top + window.scrollY - offset;
+          const top = target.getBoundingClientRect().top + window.scrollY - 80;
           window.scrollTo({ top, behavior: 'smooth' });
         }
       });
+    });
+
+    /* ====================================================
+       ACTIVE NAV
+    ==================================================== */
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a:not(.nav-join)');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 140) current = s.id; });
+      navLinks.forEach(l => {
+        l.classList.remove('active');
+        if (l.getAttribute('href') === '#' + current) l.classList.add('active');
+      });
+    });
+
+    /* ====================================================
+       JOIN FORM
+    ==================================================== */
+    function handleJoin() {
+      const name = document.getElementById('fullname').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const ward = document.getElementById('ward').value;
+      if (!name) { alert('Please enter your full name.'); return; }
+      if (!phone) { alert('Please enter your phone number.'); return; }
+      if (!ward) { alert('Please select your ward.'); return; }
+      const btn = document.querySelector('.btn-form-submit');
+      btn.textContent = 'Submitting...';
+      btn.disabled = true;
+      setTimeout(() => {
+        document.getElementById('joinFormContainer').style.display = 'none';
+        document.getElementById('formSuccess').classList.add('show');
+      }, 1000);
+    }
+
+    /* ====================================================
+       HERO PARALLAX (subtle)
+    ==================================================== */
+    window.addEventListener('scroll', () => {
+      const rays = document.querySelector('.hero-sun-rays');
+      if (rays) rays.style.transform = `translateY(${window.scrollY * 0.2}px)`;
     });
   </script>
 </body>
