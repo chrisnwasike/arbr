@@ -8,6 +8,25 @@
   <meta name="description"
     content="Join residents across Amuwo-Odofin demanding accountable leadership, stronger communities, and real development." />
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="shortcut icon" href="logo.png" />
+  <link rel="apple-touch-icon" href="logo.png" />
+
+  <!-- Open Graph / Social Card -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ARBR - Amuwo Residents for Better Representation" />
+  <meta property="og:description" content="Join residents across Amuwo-Odofin demanding accountable leadership, stronger communities, and real development." />
+  <meta property="og:image" content="logo.png" />
+  <meta property="og:image:alt" content="ARBR - Amuwo Residents for Better Representation" />
+  <meta property="og:site_name" content="ARBR" />
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ARBR - Amuwo Residents for Better Representation" />
+  <meta name="twitter:description" content="Join residents across Amuwo-Odofin demanding accountable leadership, stronger communities, and real development." />
+  <meta name="twitter:image" content="logo.png" />
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -121,6 +140,11 @@
       opacity: 0.6;
     }
 
+    @media (hover: none), (pointer: coarse) {
+      .cursor-dot, .cursor-ring { display: none; }
+      body { cursor: auto; }
+    }
+
     /* ====================================================
        NOISE OVERLAY
     ==================================================== */
@@ -138,13 +162,15 @@
        UTILITIES
     ==================================================== */
     .container {
-      width: 1200px;
+      max-width: 1200px;
+      width: 100%;
       margin: 0 auto;
       padding: 0 32px;
     }
 
     .container--wide {
       max-width: 1440px;
+      width: 100%;
       margin: 0 auto;
       padding: 0 48px;
     }
@@ -186,7 +212,7 @@
     }
 
     .loader-logo {
-      width: 80px;
+      width: clamp(56px, 15vw, 80px);
       background: white;
       border-radius: 50%;
       opacity: 0;
@@ -235,9 +261,10 @@
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      padding: 9px 24px;
+      padding: 9px 16px;
       position: relative;
       z-index: 101;
+      line-height: 1.5;
     }
 
     .announce-bar span {
@@ -291,7 +318,7 @@
       font-family: var(--font-cond);
       font-weight: 600;
       text-shadow: 0 0 0 rgba(255, 255, 255, 0.475);
-      font-size: 1rem;
+      font-size: clamp(0.72rem, 2vw, 1rem);
       letter-spacing: 0.08em;
       text-transform: uppercase;
       line-height: 1.25;
@@ -508,8 +535,8 @@
       align-items: center;
       position: relative;
       z-index: 2;
-      padding-top: 160px;
-      padding-bottom: 100px;
+      padding-top: clamp(100px, 18vw, 160px);
+      padding-bottom: clamp(60px, 10vw, 100px);
     }
 
     .hero-text-wrap {
@@ -842,7 +869,7 @@
 
     .about-img-frame img {
       width: 100%;
-      height: 480px;
+      height: clamp(260px, 40vw, 480px);
       object-fit: cover;
       display: block;
       filter: saturate(0.9);
@@ -1840,6 +1867,8 @@
     /* ====================================================
        RESPONSIVE
     ==================================================== */
+
+    /* ── Tablet wide (1024px) ── */
     @media (max-width: 1024px) {
       .pillars-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1853,10 +1882,19 @@
         width: 38vw;
         opacity: 0.5;
       }
+
+      /* Nav starts getting cramped — switch to hamburger earlier */
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
     }
 
+    /* ── Tablet narrow (900px) ── */
     @media (max-width: 900px) {
-
       .about-grid,
       .join-grid {
         grid-template-columns: 1fr;
@@ -1869,16 +1907,11 @@
       }
 
       .trust-inner {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
       }
 
-      .trust-item {
+      .trust-item:nth-child(2) {
         border-right: none;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .trust-item:last-child {
-        border-bottom: none;
       }
 
       .pillars-header {
@@ -1905,56 +1938,205 @@
       .hero-candidate-wrap {
         display: none;
       }
+
+      .join-form-wrap {
+        padding: 36px 28px;
+      }
+
+      .why-quote-card {
+        padding: 36px 28px;
+      }
     }
 
+    /* ── Mobile (768px) ── */
     @media (max-width: 768px) {
       .section {
-        padding: 80px 0;
+        padding: 72px 0;
       }
 
-      .nav-links {
-        display: none;
+      .section-sm {
+        padding: 56px 0;
       }
 
-      .hamburger {
-        display: flex;
+      .container {
+        padding: 0 16px;
       }
 
+      .container--wide {
+        padding: 0 16px;
+      }
+
+      /* Announce bar: tighter on mobile */
+      .announce-bar {
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+        padding: 8px 12px;
+      }
+
+      .announce-bar span {
+        margin: 0 4px;
+      }
+
+      /* Nav logo text: hide long name, keep icon */
+      .nav-logo-text {
+        font-size: 0.7rem;
+        letter-spacing: 0.04em;
+      }
+
+      .nav-logo img {
+        width: 36px;
+        height: 36px;
+      }
+
+      /* Pillars single column */
       .pillars-grid {
         grid-template-columns: 1fr;
       }
 
+      /* Footer single column */
       .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      /* Hero headline */
+      .hero-h1 {
+        font-size: clamp(2.8rem, 14vw, 4.5rem);
+      }
+
+      /* Hero sub */
+      .hero-sub {
+        font-size: 0.96rem;
+        max-width: 100%;
+      }
+
+      /* Hero stats */
+      .hero-stats {
+        margin-top: 40px;
+        padding-top: 24px;
+      }
+
+      /* About float badge: keep in bounds */
+      .about-float-badge {
+        right: 0;
+        bottom: -16px;
+        padding: 14px 18px;
+      }
+
+      .about-float-badge strong {
+        font-size: 1.8rem;
+      }
+
+      /* Trust: single column on mobile */
+      .trust-inner {
         grid-template-columns: 1fr;
       }
 
-      .hero-h1 {
-        font-size: clamp(3rem, 16vw, 5rem);
+      .trust-item {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 24px 20px;
       }
 
-      .about-float-badge {
-        right: 0;
+      .trust-item:last-child {
+        border-bottom: none;
       }
 
-      .container {
-        padding: 0 20px;
+      /* Form */
+      .join-form-wrap {
+        padding: 28px 20px;
+      }
+
+      /* Why quote card */
+      .why-quote-card {
+        padding: 32px 24px;
+      }
+
+      .why-quote-text {
+        font-size: 1.1rem;
+      }
+
+      /* CTA section */
+      #cta {
+        padding: 80px 0;
+      }
+
+      #cta h2 {
+        font-size: clamp(2.4rem, 11vw, 4rem);
+      }
+
+      /* Footer bottom stack */
+      .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+      }
+
+      /* Scroll top position */
+      #scrollTop {
+        bottom: 16px;
+        right: 16px;
+        width: 40px;
+        height: 40px;
+      }
+
+      /* Section title */
+      .section-title {
+        font-size: clamp(2.2rem, 10vw, 3.5rem);
       }
     }
 
+    /* ── Mobile small (480px) ── */
     @media (max-width: 480px) {
       .hero-cta-row {
         flex-direction: column;
         align-items: flex-start;
+        gap: 12px;
+      }
+
+      .btn-hero-primary,
+      .btn-hero-ghost {
+        width: 100%;
+        justify-content: center;
       }
 
       .cta-buttons {
         flex-direction: column;
-        align-items: center;
+        align-items: stretch;
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+      }
+
+      .btn-cta-white,
+      .btn-cta-ghost {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .hero-location-badge {
+        font-size: 0.62rem;
+        padding: 6px 10px;
+      }
+
+      .why-pillars-mini {
+        grid-template-columns: 1fr;
+      }
+
+      .announce-bar {
+        font-size: 0.65rem;
+      }
+
+      .pillar-card {
+        padding: 28px 20px;
+      }
+
+      .footer-top-bar {
+        margin-bottom: 40px;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-
       *,
       *::before,
       *::after {
@@ -2547,25 +2729,31 @@
     ==================================================== */
     const dot = document.getElementById('cursorDot');
     const ring = document.getElementById('cursorRing');
-    let mx = 0, my = 0, rx = 0, ry = 0;
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    function animateCursor() {
-      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
-      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-      requestAnimationFrame(animateCursor);
+    // Only run custom cursor on pointer/mouse devices
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      let mx = 0, my = 0, rx = 0, ry = 0;
+      document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+      function animateCursor() {
+        dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+        rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+        ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+        requestAnimationFrame(animateCursor);
+      }
+      animateCursor();
+      document.querySelectorAll('a, button, .pillar-card, .why-issue').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          dot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+          ring.style.width = '56px'; ring.style.height = '56px'; ring.style.opacity = '0.35';
+        });
+        el.addEventListener('mouseleave', () => {
+          dot.style.transform = 'translate(-50%, -50%) scale(1)';
+          ring.style.width = '36px'; ring.style.height = '36px'; ring.style.opacity = '0.6';
+        });
+      });
+    } else {
+      if (dot) dot.style.display = 'none';
+      if (ring) ring.style.display = 'none';
     }
-    animateCursor();
-    document.querySelectorAll('a, button, .pillar-card, .why-issue').forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        dot.style.transform = 'translate(-50%, -50%) scale(1.5)';
-        ring.style.width = '56px'; ring.style.height = '56px'; ring.style.opacity = '0.35';
-      });
-      el.addEventListener('mouseleave', () => {
-        dot.style.transform = 'translate(-50%, -50%) scale(1)';
-        ring.style.width = '36px'; ring.style.height = '36px'; ring.style.opacity = '0.6';
-      });
-    });
 
     /* ====================================================
        NAVBAR SCROLL
